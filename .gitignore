@@ -1,0 +1,79 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Dependency directories
+jspm_packages/
+
+# Build directories
+dist/
+build/
+
+# Static files
+public/static/
+
+# Test coverage
+coverage/
+
+# Configuration files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# IDE/Editor specific files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# MacOS specific files
+.DS_Store
+
+# Linux specific files
+*~
+
+# Windows specific files
+Thumbs.db
+*.lnk
+
+# Tailwind generated CSS
+src/styles.css
+
+# Ignore any output of linting or formatting
+eslint.report.json
+prettier.report.json
+
+# Ignore npm debug files
+npm-debug.log
+yarn-debug.log
+
+# Ignore lock files
+package-lock.json
+yarn.lock
+
+# Ignore parcel cache
+.cache/
+
+# Ignore SASS cache
+.sass-cache/
+
+# Ignore storybook build output
+.out/
