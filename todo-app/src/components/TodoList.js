@@ -1,17 +1,34 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getTodos, createTodo, updateTodo, deleteTodo, logout } from '../api/api';
 import Starfield from 'react-starfield';
+import './Starfield.css';
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
   const fetchTodos = useCallback(async () => {
-    const response = await getTodos(token);
-    setTodos(response.data);
-  }, [token]);
+    if (!token) {
+      alert('Please log in.');
+      navigate('/login');
+      return;
+    }
+    try {
+      const response = await getTodos(token);
+      setTodos(response.data);
+    } catch (error) {
+      console.error('Failed to fetch todos', error);
+      if (error.response && error.response.status === 401) {
+        alert('Session expired. Please log in again.');
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    }
+  }, [token, navigate]);
 
   useEffect(() => {
     fetchTodos();
@@ -23,10 +40,19 @@ const TodoList = () => {
       alert('Please log in to add a todo.');
       return;
     }
-    await createTodo(token, title, description);
-    setTitle('');
-    setDescription('');
-    fetchTodos();
+    try {
+      await createTodo(token, title, description);
+      setTitle('');
+      setDescription('');
+      fetchTodos();
+    } catch (error) {
+      console.error('Failed to create todo', error);
+      if (error.response && error.response.status === 401) {
+        alert('Session expired. Please log in again.');
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    }
   };
 
   const handleUpdateTodo = async (id, done) => {
@@ -35,8 +61,17 @@ const TodoList = () => {
       return;
     }
     const todo = todos.find((t) => t.id === id);
-    await updateTodo(token, id, todo.title, todo.description, done);
-    fetchTodos();
+    try {
+      await updateTodo(token, id, todo.title, todo.description, done);
+      fetchTodos();
+    } catch (error) {
+      console.error('Failed to update todo', error);
+      if (error.response && error.response.status === 401) {
+        alert('Session expired. Please log in again.');
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    }
   };
 
   const handleDeleteTodo = async (id) => {
@@ -44,8 +79,17 @@ const TodoList = () => {
       alert('Please log in to delete a todo.');
       return;
     }
-    await deleteTodo(token, id);
-    fetchTodos();
+    try {
+      await deleteTodo(token, id);
+      fetchTodos();
+    } catch (error) {
+      console.error('Failed to delete todo', error);
+      if (error.response && error.response.status === 401) {
+        alert('Session expired. Please log in again.');
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    }
   };
 
   const handleLogout = async () => {
@@ -56,7 +100,7 @@ const TodoList = () => {
     try {
       await logout(token);
       localStorage.removeItem('token');
-      window.location.reload();
+      navigate('/login');
     } catch (error) {
       console.error('Error logging out:', error);
       alert('Error logging out. Please try again.');
@@ -71,7 +115,7 @@ const TodoList = () => {
       <Starfield
         style={{ position: 'absolute', width: '100%', height: '100%', zIndex: 0 }}
       />
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-2xl relative z-10">
+      <div className="card w-full max-w-2xl relative z-10">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold text-center"><a href="https://www.linkedin.com/in/motidivya/">Divyesh's</a> Online Todo List</h2>
           {token && (
@@ -92,6 +136,7 @@ const TodoList = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg"
+                aria-label="Todo title"
               />
             </div>
             <div>
@@ -101,9 +146,10 @@ const TodoList = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg"
+                aria-label="Todo description"
               />
             </div>
-            <button type="submit" className="w-full p-2 bg-black rounded-lg hover:opacity-75 transition">
+            <button type="submit" className="w-full p-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">
               Add Todo
             </button>
           </form>
@@ -122,6 +168,7 @@ const TodoList = () => {
                   checked={todo.done}
                   onChange={() => handleUpdateTodo(todo.id, !todo.done)}
                   className="w-6 h-6 text-black bg-gray-700 border-gray-600 rounded"
+                  aria-label={`Mark ${todo.title} as completed`}
                 />
                 {token && (
                   <button
@@ -140,7 +187,7 @@ const TodoList = () => {
             <h3 className="text-xl font-semibold mt-8 mb-4">Completed Todos</h3>
             <ul className="space-y-4">
               {completedTodos.map((todo) => (
-                <li key={todo.id} className="bg-gray-700 p-4 rounded-lg flex justify-between items-center">
+                <li key={todo.id} className="bg-gray-700 p-4 rounded-lg flex justify-between items-center todo-item completed">
                   <div>
                     <h3 className="text-lg font-semibold">{todo.title}</h3>
                     <p>{todo.description}</p>
@@ -151,6 +198,7 @@ const TodoList = () => {
                       checked={todo.done}
                       onChange={() => handleUpdateTodo(todo.id, !todo.done)}
                       className="w-6 h-6 text-black bg-gray-700 border-gray-600 rounded"
+                      aria-label={`Mark ${todo.title} as not completed`}
                     />
                     {token && (
                       <button

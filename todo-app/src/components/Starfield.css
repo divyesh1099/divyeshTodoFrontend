@@ -1,0 +1,60 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: black;
+  }
+  
+  .starfield {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #000;
+  }
+  
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    box-shadow: 0 0 8px white;
+    animation: animateStar 100s linear infinite;
+  }
+  
+  @keyframes animateStar {
+    0% {
+      transform: translateY(0) translateX(0);
+    }
+    100% {
+      transform: translateY(100vh) translateX(calc(100vw - 50%));
+    }
+  }
+  
+  .card {
+    background: rgba(31, 31, 31, 0.85); /* transparent background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  @media (max-width: 768px) {
+    .card {
+      padding: 15px;
+    }
+  }
+  
+  .todo-item.completed div {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  
+  h2 {
+    color: #61dafb;
+  }
+  
+  button, input[type="text"], input[type="password"] {
+    color: white;
+    background-color: #282c34;
+  }
+  

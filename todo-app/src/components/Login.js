@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/api';
 import Starfield from 'react-starfield';
+import './Starfield.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -16,6 +17,7 @@ const Login = () => {
       navigate('/todos');
     } catch (error) {
       console.error('Login failed', error);
+      alert('Login failed. Please check your username and password.');
     }
   };
 
@@ -24,7 +26,7 @@ const Login = () => {
       <Starfield
         style={{ position: 'absolute', width: '100%', height: '100%', zIndex: 0 }}
       />
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md relative z-10">
+      <div className="card w-full max-w-md relative z-10">
         <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
@@ -35,6 +37,7 @@ const Login = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg"
+              aria-label="Username"
             />
           </div>
           <div>
@@ -45,6 +48,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg"
+              aria-label="Password"
             />
           </div>
           <button type="submit" className="w-full p-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">Login</button>
