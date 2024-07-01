@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { getTodos, createTodo, updateTodo, deleteTodo } from '../api/api';
+import React, { useState, useEffect, useCallback } from 'react';
+import { getTodos, createTodo, updateTodo, deleteTodo, logout } from '../api/api';
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
@@ -7,14 +7,14 @@ const TodoList = () => {
   const [description, setDescription] = useState('');
   const token = localStorage.getItem('token');
 
-  const fetchTodos = async () => {
+  const fetchTodos = useCallback(async () => {
     const response = await getTodos(token);
     setTodos(response.data);
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [fetchTodos]);
 
   const handleCreateTodo = async (e) => {
     e.preventDefault();
@@ -47,13 +47,38 @@ const TodoList = () => {
     fetchTodos();
   };
 
+  const handleLogout = async () => {
+    if (!token) {
+      alert('You are not logged in.');
+      return;
+    }
+    try {
+      await logout(token);
+      localStorage.removeItem('token');
+      window.location.reload();
+    } catch (error) {
+      console.error('Error logging out:', error);
+      alert('Error logging out. Please try again.');
+    }
+  };
+
   const pendingTodos = todos.filter(todo => !todo.done);
   const completedTodos = todos.filter(todo => todo.done);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-semibold mb-6 text-center"><a href="https://www.linkedin.com/in/motidivya/">Divyesh's</a> Online Todo List</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold text-center"><a href="https://www.linkedin.com/in/motidivya/">Divyesh's</a> Online Todo List</h2>
+          {token && (
+            <button
+              onClick={handleLogout}
+              className="p-2 bg-red-600 rounded-lg hover:opacity-75 transition"
+            >
+              Logout
+            </button>
+          )}
+        </div>
         {token && (
           <form onSubmit={handleCreateTodo} className="space-y-4 mb-6">
             <div>

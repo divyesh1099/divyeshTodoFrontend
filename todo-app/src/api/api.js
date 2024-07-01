@@ -37,3 +37,9 @@ export const deleteTodo = async (token, id) => {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+
+export const logout = async (token) => {
+  return await axios.post(`${API_URL}/logout`, {}, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
