@@ -12,23 +12,13 @@ const TodoList = () => {
   const token = localStorage.getItem('token');
 
   const fetchTodos = useCallback(async () => {
-    if (!token) {
-      alert('Please log in.');
-      navigate('/login');
-      return;
-    }
     try {
-      const response = await getTodos(token);
+      const response = await getTodos();
       setTodos(response.data);
     } catch (error) {
       console.error('Failed to fetch todos', error);
-      if (error.response && error.response.status === 401) {
-        alert('Session expired. Please log in again.');
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
     }
-  }, [token, navigate]);
+  }, []);
 
   useEffect(() => {
     fetchTodos();
@@ -38,6 +28,7 @@ const TodoList = () => {
     e.preventDefault();
     if (!token) {
       alert('Please log in to add a todo.');
+      navigate('/login');
       return;
     }
     try {
@@ -58,6 +49,7 @@ const TodoList = () => {
   const handleUpdateTodo = async (id, done) => {
     if (!token) {
       alert('Please log in to update a todo.');
+      navigate('/login');
       return;
     }
     const todo = todos.find((t) => t.id === id);
@@ -77,6 +69,7 @@ const TodoList = () => {
   const handleDeleteTodo = async (id) => {
     if (!token) {
       alert('Please log in to delete a todo.');
+      navigate('/login');
       return;
     }
     try {
@@ -162,23 +155,23 @@ const TodoList = () => {
                 <h3 className="text-lg font-semibold">{todo.title}</h3>
                 <p>{todo.description}</p>
               </div>
-              <div className="space-x-2 flex items-center">
-                <input
-                  type="checkbox"
-                  checked={todo.done}
-                  onChange={() => handleUpdateTodo(todo.id, !todo.done)}
-                  className="w-6 h-6 text-black bg-gray-700 border-gray-600 rounded"
-                  aria-label={`Mark ${todo.title} as completed`}
-                />
-                {token && (
+              {token && (
+                <div className="space-x-2 flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={todo.done}
+                    onChange={() => handleUpdateTodo(todo.id, !todo.done)}
+                    className="w-6 h-6 text-black bg-gray-700 border-gray-600 rounded"
+                    aria-label={`Mark ${todo.title} as completed`}
+                  />
                   <button
                     onClick={() => handleDeleteTodo(todo.id)}
                     className="p-2 bg-black rounded-lg hover:opacity-75 transition"
                   >
                     Delete
                   </button>
-                )}
-              </div>
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -192,23 +185,23 @@ const TodoList = () => {
                     <h3 className="text-lg font-semibold">{todo.title}</h3>
                     <p>{todo.description}</p>
                   </div>
-                  <div className="space-x-2 flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={todo.done}
-                      onChange={() => handleUpdateTodo(todo.id, !todo.done)}
-                      className="w-6 h-6 text-black bg-gray-700 border-gray-600 rounded"
-                      aria-label={`Mark ${todo.title} as not completed`}
-                    />
-                    {token && (
+                  {token && (
+                    <div className="space-x-2 flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={todo.done}
+                        onChange={() => handleUpdateTodo(todo.id, !todo.done)}
+                        className="w-6 h-6 text-black bg-gray-700 border-gray-600 rounded"
+                        aria-label={`Mark ${todo.title} as not completed`}
+                      />
                       <button
                         onClick={() => handleDeleteTodo(todo.id)}
                         className="p-2 bg-black rounded-lg hover:opacity-75 transition"
                       >
                         Delete
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>

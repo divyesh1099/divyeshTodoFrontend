@@ -10,10 +10,8 @@ export const login = async (username, password) => {
   return await axios.post(`${API_URL}/login`, { username, password });
 };
 
-export const getTodos = async (token) => {
-  return await axios.get(`${API_URL}/todos`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+export const getTodos = async () => {
+  return await axios.get(`${API_URL}/todos`);
 };
 
 export const createTodo = async (token, title, description) => {
