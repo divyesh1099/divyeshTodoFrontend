@@ -154,6 +154,7 @@ const TodoList = () => {
               <div>
                 <h3 className="text-lg font-semibold">{todo.title}</h3>
                 <p>{todo.description}</p>
+                <p className="text-sm text-gray-400">Edited: {new Date(todo.edited).toLocaleString()}</p>
               </div>
               {token && (
                 <div className="space-x-2 flex items-center">
@@ -184,6 +185,7 @@ const TodoList = () => {
                   <div>
                     <h3 className="text-lg font-semibold">{todo.title}</h3>
                     <p>{todo.description}</p>
+                    <p className="text-sm text-gray-400">Edited: {new Date(todo.edited).toLocaleString()}</p>
                   </div>
                   {token && (
                     <div className="space-x-2 flex items-center">
